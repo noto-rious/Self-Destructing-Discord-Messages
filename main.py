@@ -102,6 +102,8 @@ while expire_after == '':
     except:
         print(f"Error: value must be a numerical integer")
 
+expire_purdy = ConvertSectoDay(int(expire_after))
+
 print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white}{lavender} Logging in to discord, please wait...")
 
 bot = discord.Client()
@@ -109,9 +111,6 @@ bot = discord.Client()
 def greet_stdout(): 
     global expire_after
     global expire_purdy
-
-    expire_after = int(expire_after)
-    expire_purdy = ConvertSectoDay(int(expire_after))
     
     print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Connected to {lavender}{BOLD}Discord{res}{white} as user {green}{BOLD}{bot.user}{res}{white}")
     print(f"{res}{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Messages typed while this session is active will expire after {yellow}{BOLD}{expire_purdy}{res}{white}")
@@ -156,3 +155,4 @@ async def on_raw_message_delete(msg):
         print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Message with ID {green}{BOLD}{msg.message_id}{res}{white} has expired and has been deleted from {blue}{BOLD}#{chan}{res}{white}.")
 
 bot.run(token, bot=False)
+
