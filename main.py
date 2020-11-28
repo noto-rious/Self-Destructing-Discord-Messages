@@ -100,12 +100,13 @@ bot = discord.Client()
 def greet_stdout(): 
     global expire_after
     global expire_purdy
-    print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Connected to {lavender}{BOLD}Discord{res}{white} as user {green}{BOLD}{bot.user}{res}{white}")
-    expire_after = input(f"{white}How many seconds do you want your messages to stick around for?: {BOLD}{green}")
-    print(f"{res}{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Messages typed while this session is active will expire after {yellow}{BOLD}{expire_purdy}{res}{white}")
 
     expire_after = int(expire_after)
     expire_purdy = ConvertSectoDay(int(expire_after))
+    
+    print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Connected to {lavender}{BOLD}Discord{res}{white} as user {green}{BOLD}{bot.user}{res}{white}")
+    expire_after = input(f"{white}How many seconds do you want your messages to stick around for?: {BOLD}{green}")
+    print(f"{res}{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Messages typed while this session is active will expire after {yellow}{BOLD}{expire_purdy}{res}{white}")
 
 @bot.event
 async def on_ready():
