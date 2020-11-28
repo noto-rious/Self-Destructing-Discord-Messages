@@ -1,6 +1,7 @@
 import discord
 import os, sys, json
 import getpass
+import time
 from colored import fg, bg, attr
 
 green = fg('#4EC98F')
@@ -12,6 +13,7 @@ blue = fg('#3179B1')
 lavender = fg('#A074C4')
 BOLD = attr('bold')
 res = attr('reset')
+
 
 ready = False
 pending = []
@@ -62,9 +64,6 @@ if token == "Token_Here":
     jdata.close()
     jdata = json.load(open(jfile))
 
-
-expire_after = input(f"{white}How many seconds do you want your messages to stick around for?: {BOLD}{green}")
-
 def ConvertSectoDay(n): 
     day = n // (24 * 3600) 
     n = n % (24 * 3600) 
@@ -90,16 +89,23 @@ def ConvertSectoDay(n):
         de = de + str(seconds) + " secs."
     elif seconds:
         de = de + str(seconds) + " sec."
+    else:
+        de = de + str(seconds) + " secs."
     return de
 
-expire_after = int(expire_after)
-expire_purdy = ConvertSectoDay(int(expire_after))
-
+expire_after = 30
+expire_purdy = ''
 bot = discord.Client()
 
-def greet_stdout():
-    print(f"{white}Connected to {lavender}{BOLD}Discord{res}{white} as user {green}{BOLD}{bot.user}{res}{white}")
-    print(f"{white}Messages typed while this session is active will expire after {yellow}{BOLD}{expire_purdy}{res}{white}")
+def greet_stdout(): 
+    global expire_after
+    global expire_purdy
+    print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Connected to {lavender}{BOLD}Discord{res}{white} as user {green}{BOLD}{bot.user}{res}{white}")
+    expire_after = input(f"{white}How many seconds do you want your messages to stick around for?: {BOLD}{green}{res}")
+    print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Messages typed while this session is active will expire after {yellow}{BOLD}{expire_purdy}{res}{white}")
+
+    expire_after = int(expire_after)
+    expire_purdy = ConvertSectoDay(int(expire_after))
 
 @bot.event
 async def on_ready():
@@ -117,20 +123,26 @@ async def on_connect():
 
 @bot.event
 async def on_message(msg):
+    global expire_after
+    global expire_purdy
     global ready
+    global pending
     if ready == False:
         ready = True
         greet_stdout()
 
     if msg.author == bot.user:
-        await msg.edit(delete_after=expire_after)
-        print(f"{white}Message with ID {green}{BOLD}{msg.id}{res}{white} will expire in {yellow}{BOLD}{expire_purdy}{res}{white}")
         pending.append(msg.id)
+        await msg.edit(delete_after=expire_after)
+        print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Message with ID {green}{BOLD}{msg.id}{res}{white} will expire in {yellow}{BOLD}{expire_purdy}{res}{white}")
 
 @bot.event
-async def on_message_delete(msg):
-    if msg.id in pending:
-        pending.remove(msg.id)
-        print(f"{white}Message with ID {green}{BOLD}{msg.id}{res}{white} has expired and has been deleted.")
-        
+async def on_raw_message_delete(msg):
+    global pending
+    chan = bot.get_channel(msg.channel_id)
+    if msg.message_id in pending:
+        pending.remove(msg.message_id)
+
+        print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Message with ID {green}{BOLD}{msg.message_id}{res}{white} has expired and has been deleted from {blue}{BOLD}#{chan}{res}{white}.")
+
 bot.run(token, bot=False)
