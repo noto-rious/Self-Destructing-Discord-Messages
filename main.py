@@ -95,6 +95,10 @@ def ConvertSectoDay(n):
 
 expire_after = 30
 expire_purdy = ''
+
+expire_after = input(f"{white}How many seconds do you want your messages to stick around for?: {BOLD}{green}")
+print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white}{lavender} Logging in to discord, please wait...")
+
 bot = discord.Client()
 
 def greet_stdout(): 
@@ -105,7 +109,6 @@ def greet_stdout():
     expire_purdy = ConvertSectoDay(int(expire_after))
     
     print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Connected to {lavender}{BOLD}Discord{res}{white} as user {green}{BOLD}{bot.user}{res}{white}")
-    expire_after = input(f"{white}How many seconds do you want your messages to stick around for?: {BOLD}{green}")
     print(f"{res}{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Messages typed while this session is active will expire after {yellow}{BOLD}{expire_purdy}{res}{white}")
 
 @bot.event
@@ -132,10 +135,11 @@ async def on_message(msg):
         ready = True
         greet_stdout()
 
-    if msg.author == bot.user:
-        pending.append(msg.id)
-        await msg.edit(delete_after=expire_after)
-        print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Message with ID {green}{BOLD}{msg.id}{res}{white} will expire in {yellow}{BOLD}{expire_purdy}{res}{white}")
+    if ready == True:
+        if msg.author == bot.user:
+            pending.append(msg.id)
+            await msg.edit(delete_after=expire_after)
+            print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white} Message with ID {green}{BOLD}{msg.id}{res}{white} will expire in {yellow}{BOLD}{expire_purdy}{res}{white}")
 
 @bot.event
 async def on_raw_message_delete(msg):
