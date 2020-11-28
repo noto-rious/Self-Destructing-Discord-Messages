@@ -93,10 +93,15 @@ def ConvertSectoDay(n):
         de = de + str(seconds) + " secs."
     return de
 
-expire_after = 30
+expire_after = ''
 expire_purdy = ''
 
-expire_after = input(f"{white}How many seconds do you want your messages to stick around for?: {BOLD}{green}")
+while expire_after == '':
+    try:
+        expire_after = int(input(f"{white}How many seconds do you want your messages to stick around for?: {BOLD}{green}"))
+    except:
+        print(f"Error: value must be a numerical integer")
+
 print(f"{magenta}[{time.strftime('%I:%M %p', time.localtime()).rstrip()}]{white}{lavender} Logging in to discord, please wait...")
 
 bot = discord.Client()
