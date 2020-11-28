@@ -1,6 +1,8 @@
 # Self-Destructing-Discord-Messages
  Simple script that self-deletes messages on Discord using message.edit and delete_after from discord.py. Inspired by keybase's exploding messages.
  
+ Should be cross-platform for both Linux and Windows.
+ 
 ![Screenshot](screenshot.png)
 
 ***
